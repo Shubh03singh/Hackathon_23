@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Creator Dashboard</title>
+  <style>
+    body {
+      background-image:url(https://wallpaperaccess.com/full/1308869.jpg);
+      background-repeat: no-repeat;
+      background-attachment: fixed; 
+      background-size: 100% 100%;
+      }
+  </style>
+  
+</head>
+<body>
+  <h1>Creator Dashboard</h1>
+  <input type="text" id="searchInput" placeholder="Search by Name">
+  <label for="filter">Filter by:</label>
+  <select id="filter">
+    <option value="">All</option>
+    <option value="city">City</option>
+    <option value="state">State</option>
+    <option value="category">Category</option>
+    
+  </select>
+  <button onclick="searchCreators()">Search</button>
+
+  <ul id="creatorList"></ul>
+
+  <script>
+    function searchCreators() {
+      const searchValue = document.getElementById('searchInput').value;
+      const filterValue = document.getElementById('filter').value;
+
+      axios.get(`http://localhost:3000/api/creators?${filterValue}=${searchValue}`)
+        .then((response) => {
+          const creators = response.data;
+          const creatorList = document.getElementById('creatorList');
+
+          // Clear previous results
+          creatorList.innerHTML = '';
+
+          if (creators.length === 0) {
+            creatorList.innerHTML = '<li>No creators found.</li>';
+          } else {
+            creators.forEach((creator) => {
+              const listItem = document.createElement('li');
+              listItem.textContent = creator.name;
+             
+              creatorList.appendChild(listItem);
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error.message);
+        });
+    }
+  </script>
+</body>
+</html>
